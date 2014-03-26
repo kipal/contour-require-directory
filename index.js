@@ -64,10 +64,13 @@ var fs               = require('fs'),
         var joined = pathModule.join(path, filename);
 
         if(fs.statSync(joined).isDirectory()) {
+            console.log("<" + filename + ">");
             var files = requireDirectory(inModule, joined, delegate, callback); // this node is a directory; recurse
 
             if (Object.keys(files).length) {
                 retval[filename] = files;
+
+                console.log("</" + filename + ">");
             }
 
         } else {
@@ -76,6 +79,8 @@ var fs               = require('fs'),
                 var name     = filename.substring(0, filename.lastIndexOf('.')); // hash node shouldn't include file extension
 
                 retval[name] = inModule.require(joined).getReference();
+
+                console.log("<submodule>" + name + "</submodule>");
 
                 if (callback && typeof(callback) === 'function') {
                     callback(null, retval[name]);
