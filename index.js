@@ -1,11 +1,23 @@
-var fs = require('fs');
-var join = require('path').join;
-var resolve = require('path').resolve;
-var dirname = require('path').dirname;
+Object.prototype.isEmpty = function () {
+    for (var key in this) {
+        if (this[key].hasOwnProperty()) {
 
-global.ModuleCache = {};
+            return false;
+        }
+    }
 
-var requireDirectory = module.exports = function(m, path, exclude, callback){
+    return true;
+};
+
+require("./Require.js");
+require("./Module.js");
+
+
+
+var fs               = require('fs'),
+    pathModule       = require('path'),
+    requireDirectory = module.exports = function(inModule, path, blackList, callback) {
+
     var defaultDelegate = function(path, filename){
 
         return filename[0] !== '.' && /\.(js|json|coffee)$/i.test(filename);
@@ -16,20 +28,20 @@ var requireDirectory = module.exports = function(m, path, exclude, callback){
 
     // if no path was passed in, assume the equivelant of __dirname from caller
     if(!path){
-        path = dirname(m.filename);
+        path = pathModule.dirname(inModule.filename);
     }
 
     // if a RegExp was passed in as exclude, create a delegate that blacklists that RegExp
     // if a function was passed in as exclude, use that function as the delegate
     // default to an always-yes delegate
-    if(exclude instanceof RegExp) {
+    if(blackList instanceof RegExp) {
 
         delegate = function(path, filename) {
 
             if(!defaultDelegate(path, filename)) {
 
                 return false;
-            } else if(exclude.test(path)) {
+            } else if(blackList.test(path)) {
 
                 return false;
             } else {
@@ -39,30 +51,31 @@ var requireDirectory = module.exports = function(m, path, exclude, callback){
         };
 
     } else if(
-            exclude
-            && {}.toString.call(exclude) === '[object Function]'
+            blackList
+            && {}.toString.call(blackList) === '[object Function]'
     ) {
-        delegate = exclude;
+        delegate = blackList;
     }
 
     // get the path of each file in specified directory, append to current tree node, recurse
-    path = resolve(path);
+    path = pathModule.resolve(path);
 
     fs.readdirSync(path).forEach(function(filename){
-        var joined = join(path, filename);
+        var joined = pathModule.join(path, filename);
 
         if(fs.statSync(joined).isDirectory()) {
-            var files = requireDirectory(m, joined, delegate, callback); // this node is a directory; recurse
+            var files = requireDirectory(inModule, joined, delegate, callback); // this node is a directory; recurse
 
             if (Object.keys(files).length) {
                 retval[filename] = files;
             }
+
         } else {
 
-            if(joined !== m.filename && delegate(joined, filename)) {
+            if(joined !== inModule.filename && delegate(joined, filename)) {
                 var name     = filename.substring(0, filename.lastIndexOf('.')); // hash node shouldn't include file extension
 
-                retval[name] = m.require(joined).getReference();
+                retval[name] = inModule.require(joined).getReference();
 
                 if (callback && typeof(callback) === 'function') {
                     callback(null, retval[name]);
