@@ -1,3 +1,4 @@
+// TODO outsourcing for the clientscript. This is the first in the bootstrap!
 Object.prototype.isEmpty = function () {
     for (var key in this) {
         if (this[key].hasOwnProperty()) {
@@ -7,6 +8,10 @@ Object.prototype.isEmpty = function () {
     }
 
     return true;
+};
+
+String.prototype.repeat = function(nu) {
+    return new Array(n + 1).join(this);
 };
 
 require("./Require.js");
