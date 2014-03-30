@@ -102,7 +102,14 @@ var fs               = require('fs'),
             if(joined !== inModule.filename && delegate(joined, filename)) {
                 var name     = filename.substring(0, filename.lastIndexOf('.')); // hash node shouldn't include file extension
 
-                retval[name] = inModule.require(joined).getReference();
+                try {
+                    retval[name] = inModule.require(joined).getReference();
+                } catch (err) {
+                    console.log('Not found the ' + name + ' module!');
+
+                    // TODO csak dev-modeban menjen tovább.
+                    retval[name] = {};
+                }
 
                 console.log("<submodule>" + name + "</submodule>");
 
