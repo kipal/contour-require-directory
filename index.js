@@ -10,7 +10,26 @@ Object.prototype.isEmpty = function () {
     return true;
 };
 
-String.prototype.repeat = function(nu) {
+Object.prototype.deepExtend = function (o) {
+    for (var i in o) {
+        if (o.hasOwnProperty(i)) {
+            if ('object' === typeof o[i]) {
+
+                if ('[object Array]' === o[i].toString()) {
+                    this[i] = [];
+                } else {
+                    this[i] = {};
+                }
+
+                this[i].deepExtend(o[i]);
+            } else {
+                this[i] = o[i];
+            }
+        }
+    }
+};
+
+String.prototype.repeat = function(n) {
     return new Array(n + 1).join(this);
 };
 
