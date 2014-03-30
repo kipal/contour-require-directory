@@ -22,6 +22,7 @@ global.Module = function (moduleReference) {
         if (false === arguments[0]) {
 
             this.depRef = false;
+
             return this;
         }
 

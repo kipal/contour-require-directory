@@ -105,7 +105,7 @@ var fs               = require('fs'),
                 try {
                     retval[name] = inModule.require(joined).getReference();
                 } catch (err) {
-                    console.log('Not found the ' + name + ' module!');
+                    console.log('Not found the ' + name + ' module! (' + err + '\n\n' + err.stack + ')');
 
                     // TODO csak dev-modeban menjen tovább.
                     retval[name] = {};
