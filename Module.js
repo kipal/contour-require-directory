@@ -36,7 +36,11 @@ global.Module = function (moduleReference) {
             depTmp = Require.isValid(arguments[i]);
 
             if (!depTmp) {
-                depTmp = Require.require(arguments[i]);
+                try {
+                    depTmp = Require.require(arguments[i]);
+                } catch (e) {
+                    console.log("\n\n\nError in require '" + arguments[i] + "' module.\n\n\n");
+                }
             }
 
             this.depRef.push(depTmp);
