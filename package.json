@@ -1,7 +1,7 @@
 {
   "author": "Nándor Kiss <kipal42@gmail.com> (http://github.com/kipal/)",
   "name": "contour-require-directory",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Recursively iterates over specified directory, requiring each file. For the contour-fw. From require-directory module.",
   "keywords": ["contour-fw", "require", "directory", "library", "recursive"],
   "homepage": "https://github.com/kipal/contour-require-directory",
